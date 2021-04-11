@@ -1,0 +1,144 @@
+﻿<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">{{ "AlertActionList" | translate }}</h4>
+            <a *ngIf="checkClaim('CreateAlertActionCommand')" class="pull-right" data-toggle="modal"
+              data-target="#alertaction">
+              <i style="color: white" title="{{ 'Add' | translate }}" class="far fa-plus-square fa-2x"></i></a>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <div class="col-md-4 pull-right">
+                <mat-form-field>
+                  <mat-label>Filter</mat-label>
+                  <input matInput (keyup)="applyFilter($event)" placeholder="" #input />
+                </mat-form-field>
+              </div>
+              <table mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{ "Id" | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="sensorSettingId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{ "SensorSettingId" | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.sensorSettingId }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="alertId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{ "AlertId" | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.alertId }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="message">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{ "Message" | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.message }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="update">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td style="width: 25px" mat-cell *matCellDef="let element">
+                    <a *ngIf="checkClaim('UpdateAlertActionCommand')" data-toggle="modal" data-target="#alertaction"
+                      (click)="getAlertActionById(element.id)">
+                      <i title="{{ 'Update' | translate }}" style="color: #ff5722" class="far fa-edit"></i>
+                    </a>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="delete">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td style="width: 25px" mat-cell *matCellDef="let element">
+                    <a *ngIf="checkClaim('DeleteAlertActionCommand')" (confirm)="deleteAlertAction(element.id)"
+                      [swal]="deleteSwal"><i title="{{ 'Delete' | translate }}" style="color: #d9534e"
+                        class="fas fa-trash-alt"></i></a>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                <tr class="mat-row" *matNoDataRow style="text-align: center">
+                  <td class="mat-cell" colspan="4">
+                    {{ "NoRecordsFound" | translate }} "{{ input.value }}"
+                  </td>
+                </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-angular fade" id="alertaction" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="clearFormGroup(alertActionAddForm)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="margin-top">
+          {{ "AlertActionForm" | translate }}
+        </h4>
+        <div class="separator"></div>
+        <form *ngIf="alertActionAddForm" [formGroup]="alertActionAddForm" (ngSubmit)="save()">
+          <div class="row">
+            <div class="col-md-12">
+              <select class="browser-default custom-select" formControlName="sensorSettingId">
+                <option *ngFor="let item of sensorSettingList" [value]="item.id">
+                  {{ item.sensorId }}-{{item.settingId}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <select class="browser-default custom-select" formControlName="alertId">
+                <option *ngFor="let item of alertList" [value]="item.id">
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <input  class="browser-default custom-select" formControlName="message" name="message" id="message" />
+              <div class="alert alert-danger"
+              *ngIf="alertActionAddForm.get('message')!.hasError('message') && locationAddForm.get('message')!.dirty">
+         </div>
+            </div>
+          </div>
+
+          <button mat-raised-button type="submit" class="btn btn-danger pull-right">
+            {{ "Save" | translate }}
+          </button>
+          <div class="clearfix"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<swal #deleteSwal title="{{ 'DeleteConfirm' | translate }}" icon="error" [showCancelButton]="true"
+  [confirmButtonText]="'OK'" [cancelButtonText]="'Cancel'">
+</swal>
