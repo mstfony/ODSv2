@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
+import {HubConnection, HubConnectionBuilder} from '@aspnet/signalr';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +9,25 @@ import * as Chartist from 'chartist';
 })
 export class DashboardComponent implements OnInit {
 
+  private hubConnection: HubConnection;
   constructor() { }
+
+  createConnection() {
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl('https://localhost:44376' + '/myhub')
+      .build();
+
+    this.hubConnection.start().then(() => {
+    }).catch((err) => {
+      return console.error(err.toString());
+    });
+
+    this.hubConnection.on('receiveMessage', res => {
+      //istenilen işlemleri buraya yapabilirsiniz.
+      console.log('test');
+    });
+}
+
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -69,7 +88,7 @@ export class DashboardComponent implements OnInit {
   };
   ngOnInit() {
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
-     // this.createConnection();
+      this.createConnection();
 
       const dataDailySalesChart: any = {
           labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],

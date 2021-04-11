@@ -62,8 +62,18 @@ namespace WebAPI
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",
-                builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                builder => builder.WithOrigins("https://localhost:4200")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed((host) => true));
             });
+
+            //services.AddCors(options => options.AddDefaultPolicy(policy =>
+            //    policy.AllowAnyMethod()
+            //        .AllowAnyHeader()
+            //        .AllowCredentials()
+            //        .SetIsOriginAllowed(origin => true)));
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
