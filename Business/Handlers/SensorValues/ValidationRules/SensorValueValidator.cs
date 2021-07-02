@@ -9,8 +9,8 @@ namespace Business.Handlers.SensorValues.ValidationRules
     {
         public CreateSensorValueValidator()
         {
-            RuleFor(x => x.SensorId).NotEmpty();
-            RuleFor(x => x.Value).NotEmpty();
+           // RuleFor(x => x.SensorId).NotEmpty();
+          //  RuleFor(x => x.Value).NotEmpty();
           //  RuleFor(x => x.DateTime).NotEmpty();
 
         }
@@ -19,8 +19,8 @@ namespace Business.Handlers.SensorValues.ValidationRules
     {
         public UpdateSensorValueValidator()
         {
-            RuleFor(x => x.SensorId).NotEmpty();
-            RuleFor(x => x.Value).NotEmpty();
+          //  RuleFor(x => x.SensorId).NotEmpty();
+          //  RuleFor(x => x.Value).NotEmpty();
          //   RuleFor(x => x.DateTime).NotEmpty();
 
         }

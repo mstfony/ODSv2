@@ -11,6 +11,7 @@ using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DataAccess.Concrete.EntityFramework.Contexts;
 
 namespace Business.Handlers.Authorizations.Queries
 {
@@ -36,6 +37,7 @@ namespace Business.Handlers.Authorizations.Queries
             [LogAspect(typeof(FileLogger))]
             public async Task<IDataResult<AccessToken>> Handle(LoginUserQuery request, CancellationToken cancellationToken)
             {
+               
                 var user = await _userRepository.GetAsync(u => u.Email == request.Email && u.Status);
 
                 if (user == null)

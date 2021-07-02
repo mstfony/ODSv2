@@ -22,6 +22,8 @@ namespace DataAccess.Concrete.EntityFramework.Contexts
         /// </summary>
         /// <param name="options"></param>
         /// <param name="configuration"></param>
+        ///
+        /// 
         public ProjectDbContext(DbContextOptions<ProjectDbContext> options, IConfiguration configuration)
                                                                                 : base(options)
         {
@@ -39,6 +41,7 @@ namespace DataAccess.Concrete.EntityFramework.Contexts
             Configuration = configuration;
         }
 
+     
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,8 +51,8 @@ namespace DataAccess.Concrete.EntityFramework.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                base.OnConfiguring(optionsBuilder.UseNpgsql(Configuration.GetConnectionString("DArchPgContext")).EnableSensitiveDataLogging());
-
+                   base.OnConfiguring(optionsBuilder.UseNpgsql(Configuration.GetConnectionString("DArchPgContext")).EnableSensitiveDataLogging());
+               // base.OnConfiguring(optionsBuilder.UseNpgsql(connectionString).EnableSensitiveDataLogging());
             }
         }
 
@@ -74,6 +77,8 @@ namespace DataAccess.Concrete.EntityFramework.Contexts
         public DbSet<SensorValue> SensorValues { get; set; }
         public DbSet<AlertActionLog> AlertActionLogs { get; set; }
         public DbSet<AlertActionUser> AlertActionUsers { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<DeviceSensor> DeviceSensors { get; set; }
 
     }
 }

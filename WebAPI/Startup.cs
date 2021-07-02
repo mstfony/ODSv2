@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text.Json.Serialization;
+using WebAPI.Controllers;
 using WebAPI.Hubs;
 
 namespace WebAPI
@@ -173,7 +174,7 @@ namespace WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<MyHub>("/myhub");
+                endpoints.MapHub<SensorValuesController.SensorValueSign>("/sensorvaluesign");
             });
         }
     }

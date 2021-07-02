@@ -1,37 +1,35 @@
 ﻿
-using Business.Handlers.SensorValues.Commands;
-using Business.Handlers.SensorValues.Queries;
+using Business.Handlers.DeviceSensors.Commands;
+using Business.Handlers.DeviceSensors.Queries;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Entities.Concrete;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.SignalR;
-using WebAPI.Hubs;
 
 namespace WebAPI.Controllers
 {
     /// <summary>
-    /// SensorValues If controller methods will not be Authorize, [AllowAnonymous] is used.
+    /// DeviceSensors If controller methods will not be Authorize, [AllowAnonymous] is used.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class SensorValuesController : BaseApiController
+    public class DeviceSensorsController : BaseApiController
     {
         ///<summary>
-        ///List SensorValues
+        ///List DeviceSensors
         ///</summary>
-        ///<remarks>SensorValues</remarks>
-        ///<return>List SensorValues</return>
+        ///<remarks>DeviceSensors</remarks>
+        ///<return>List DeviceSensors</return>
         ///<response code="200"></response>
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SensorValue>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DeviceSensor>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("getall")]
         public async Task<IActionResult> GetList()
         {
-            var result = await Mediator.Send(new GetSensorValuesQuery());
+            var result = await Mediator.Send(new GetDeviceSensorsQuery());
             if (result.Success)
             {
                 return Ok(result.Data);
@@ -42,16 +40,16 @@ namespace WebAPI.Controllers
         ///<summary>
         ///It brings the details according to its id.
         ///</summary>
-        ///<remarks>SensorValues</remarks>
-        ///<return>SensorValues List</return>
+        ///<remarks>DeviceSensors</remarks>
+        ///<return>DeviceSensors List</return>
         ///<response code="200"></response>  
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SensorValue))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DeviceSensor))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("getbyid")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await Mediator.Send(new GetSensorValueQuery { Id = id });
+            var result = await Mediator.Send(new GetDeviceSensorQuery { Id = id });
             if (result.Success)
             {
                 return Ok(result.Data);
@@ -60,74 +58,55 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Add SensorValue.
+        /// Add DeviceSensor.
         /// </summary>
-        /// <param name="createSensorValue"></param>
+        /// <param name="createDeviceSensor"></param>
         /// <returns></returns>
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateSensorValueCommand createSensorValue)
+        public async Task<IActionResult> Add([FromBody] CreateDeviceSensorCommand createDeviceSensor)
         {
-            var result = await Mediator.Send(createSensorValue);
+            var result = await Mediator.Send(createDeviceSensor);
             if (result.Success)
             {
-                MyHub myHub = new MyHub();
-                await myHub.SendMessageAsync("Isı : ");
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
         }
 
         /// <summary>
-        /// 
+        /// Update DeviceSensor.
         /// </summary>
-        public class SensorValueSign : Hub
-        {
-            public override Task OnConnectedAsync()
-            {
-                return Clients.Client(Context.ConnectionId).SendAsync("SetConnectionId", Context.ConnectionId);
-            }
-           
-            public Task PushValues(SensorValue sensorValue)
-            {
-                return Clients.Client(Context.ConnectionId).SendAsync("GetValues", sensorValue);
-            }
-        }
-
-        /// <summary>
-        /// Update SensorValue.
-        /// </summary>
-        /// <param name="updateSensorValue"></param>
+        /// <param name="updateDeviceSensor"></param>
         /// <returns></returns>
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateSensorValueCommand updateSensorValue)
+        public async Task<IActionResult> Update([FromBody] UpdateDeviceSensorCommand updateDeviceSensor)
         {
-            var result = await Mediator.Send(updateSensorValue);
+            var result = await Mediator.Send(updateDeviceSensor);
             if (result.Success)
             {
-               
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
         }
 
         /// <summary>
-        /// Delete SensorValue.
+        /// Delete DeviceSensor.
         /// </summary>
-        /// <param name="deleteSensorValue"></param>
+        /// <param name="deleteDeviceSensor"></param>
         /// <returns></returns>
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] DeleteSensorValueCommand deleteSensorValue)
+        public async Task<IActionResult> Delete([FromBody] DeleteDeviceSensorCommand deleteDeviceSensor)
         {
-            var result = await Mediator.Send(deleteSensorValue);
+            var result = await Mediator.Send(deleteDeviceSensor);
             if (result.Success)
             {
                 return Ok(result.Message);

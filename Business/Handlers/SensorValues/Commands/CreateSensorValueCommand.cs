@@ -23,6 +23,8 @@ using Business.Handlers.SensorSettings.Queries;
 using Business.Handlers.SensorValues.ValidationRules;
 using Business.Handlers.Settings.Queries;
 using Business.Handlers.Users.Queries;
+using Core.Utilities.MessageBrokers.RabbitMq;
+using Newtonsoft.Json;
 
 namespace Business.Handlers.SensorValues.Commands
 {
@@ -41,10 +43,12 @@ namespace Business.Handlers.SensorValues.Commands
         {
             private readonly ISensorValueRepository _sensorValueRepository;
             private readonly IMediator _mediator;
-            public CreateSensorValueCommandHandler(ISensorValueRepository sensorValueRepository, IMediator mediator)
+            private readonly IMessageBrokerHelper _messageBrokerHelper;
+            public CreateSensorValueCommandHandler(ISensorValueRepository sensorValueRepository, IMediator mediator,IMessageBrokerHelper messageBrokerHelper)
             {
                 _sensorValueRepository = sensorValueRepository;
                 _mediator = mediator;
+                _messageBrokerHelper = messageBrokerHelper;
             }
 
             [ValidationAspect(typeof(CreateSensorValueValidator), Priority = 1)]
@@ -64,6 +68,10 @@ namespace Business.Handlers.SensorValues.Commands
 
                 _sensorValueRepository.Add(addedSensorValue);
                 await _sensorValueRepository.SaveChangesAsync();
+
+                //RabbitMQ ya gönderir....
+                var message = JsonConvert.SerializeObject(addedSensorValue);
+                _messageBrokerHelper.QueueMessage(message);
 
                 //Sensör Setting den Sensor ID ye göre veri çekiyorum
               //  var sensorSettings = _sensorSettingRepository.GetList(m => m.SensorId == request.SensorId).ToList();

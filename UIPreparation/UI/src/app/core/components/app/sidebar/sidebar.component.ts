@@ -33,7 +33,9 @@ export const USERROUTES: RouteInfo[] = [
   { path: '/sensor-value', title: 'Sensor Value', icon: 'update', class: '', claim: "GetSensorValueQuery" },
   { path: '/setting', title: 'Settings', icon: 'update', class: '', claim: "GetSettingQuery" },
   { path: '/alert-action-user', title: 'Alert Action User', icon: 'update', class: '', claim: "GetAlertActionUserQuery" },
-  { path: '/alert-action-log', title: 'Alert Action Log', icon: 'update', class: '', claim: "GetAlertActionLogQuery" }
+  { path: '/alert-action-log', title: 'Alert Action Log', icon: 'update', class: '', claim: "GetAlertActionLogQuery" },
+  { path: '/device', title: 'Device', icon: 'update', class: '', claim: "GetDeviceQuery" },
+  { path: '/device-sensor', title: 'Device Sensor Settings', icon: 'update', class: '', claim: "GetDeviceSensorQuery" }
 ];
 
 @Component({

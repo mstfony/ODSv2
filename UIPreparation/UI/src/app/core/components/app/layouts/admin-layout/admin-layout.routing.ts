@@ -12,6 +12,8 @@ import { AlertActionComponent } from '../../alertAction/alertAction.component';
 import { AlertActionLogComponent } from '../../alertActionLog/alertActionLog.component';
 import { AlertActionUserComponent } from '../../alertActionUser/alertActionUser.component';
 import { DashboardComponent } from '../../dashboard/dashboard.component';
+import { DeviceComponent } from '../../device/device.component';
+import { DeviceSensorComponent } from '../../deviceSensor/deviceSensor.component';
 import { LocationComponent } from '../../location/location.component';
 import { ParameterComponent } from '../../parameter/parameter.component';
 import { SensorComponent } from '../../sensor/sensor.component';
@@ -45,5 +47,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'setting',        component: SettingComponent,canActivate:[LoginGuard]},
     { path: 'alert-action-user',        component: AlertActionUserComponent,canActivate:[LoginGuard]},
     { path: 'alert-action-log',        component: AlertActionLogComponent,canActivate:[LoginGuard]},
+    { path: 'device',        component: DeviceComponent,canActivate:[LoginGuard]},
+    { path: 'device-sensor',        component: DeviceSensorComponent,canActivate:[LoginGuard]},
         
 ];

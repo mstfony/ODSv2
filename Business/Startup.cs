@@ -102,6 +102,8 @@ namespace Business
         {
 
             ConfigureServices(services);
+            services.AddTransient<IDeviceSensorRepository, DeviceSensorRepository>();
+            services.AddTransient<IDeviceRepository, DeviceRepository>();
             services.AddTransient<IAlertActionUserRepository, AlertActionUserRepository>();
             services.AddTransient<IAlertActionLogRepository, AlertActionLogRepository>();
             services.AddTransient<ISensorValueRepository, SensorValueRepository>();
@@ -138,6 +140,8 @@ namespace Business
         public void ConfigureStagingServices(IServiceCollection services)
         {
             ConfigureServices(services);
+            services.AddTransient<IDeviceSensorRepository, DeviceSensorRepository>();
+            services.AddTransient<IDeviceRepository, DeviceRepository>();
             services.AddTransient<IAlertActionUserRepository, AlertActionUserRepository>();
             services.AddTransient<IAlertActionLogRepository, AlertActionLogRepository>();
             services.AddTransient<ISensorValueRepository, SensorValueRepository>();
@@ -173,6 +177,8 @@ namespace Business
         public void ConfigureProductionServices(IServiceCollection services)
         {
             ConfigureServices(services);
+            services.AddTransient<IDeviceSensorRepository, DeviceSensorRepository>();
+            services.AddTransient<IDeviceRepository, DeviceRepository>();
             services.AddTransient<IAlertActionUserRepository, AlertActionUserRepository>();
             services.AddTransient<IAlertActionLogRepository, AlertActionLogRepository>();
             services.AddTransient<ISensorValueRepository, SensorValueRepository>();

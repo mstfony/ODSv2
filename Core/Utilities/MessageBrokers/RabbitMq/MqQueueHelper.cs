@@ -33,8 +33,8 @@ namespace Core.Utilities.MessageBrokers.RabbitMq
                         autoDelete: false,
                         arguments: null);
 
-                var message = JsonConvert.SerializeObject(messageText);
-                var body = Encoding.UTF8.GetBytes(message);
+             
+                var body = Encoding.UTF8.GetBytes(messageText);
 
                 channel.BasicPublish(exchange: "", routingKey: "DArchQueue", basicProperties: null, body: body);
             }

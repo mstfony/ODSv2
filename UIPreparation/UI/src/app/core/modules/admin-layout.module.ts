@@ -39,6 +39,8 @@ import { SensorValueComponent } from '../components/app/sensorValue/sensorValue.
 import { SettingComponent } from '../components/app/setting/setting.component';
 import { AlertActionUserComponent } from '../components/app/alertActionUser/alertActionUser.component';
 import { AlertActionLogComponent } from '../components/app/alertActionLog/alertActionLog.component';
+import { DeviceComponent } from '../components/app/device/device.component';
+import { DeviceSensorComponent } from '../components/app/deviceSensor/deviceSensor.component';
 
 // export function layoutHttpLoaderFactory(http: HttpClient) {
 // 
@@ -92,7 +94,9 @@ import { AlertActionLogComponent } from '../components/app/alertActionLog/alertA
         SensorValueComponent,
         SettingComponent,
         AlertActionUserComponent,
-        AlertActionLogComponent
+        AlertActionLogComponent,
+        DeviceComponent,
+        DeviceSensorComponent
 
 
     ]
