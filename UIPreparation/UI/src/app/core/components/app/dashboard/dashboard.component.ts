@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
     let hubConnection = new HubConnectionBuilder()
-      .withUrl("https://localhost:44379/sensorvaluesign")
+      .withUrl("https://localhost:44376/WebAPI/sensorvaluesign")
       .build();
 
     hubConnection.start().then((res) => {

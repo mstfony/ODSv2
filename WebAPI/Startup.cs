@@ -60,6 +60,12 @@ namespace WebAPI
 
             services.AddSignalR();
 
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowOrigin",
+            //        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //});
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",

@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  getApiUrl: "https://odsservice.hatemhastanesi.com.tr/api",
+  getApiUrl: "https://localhost:44376/WebAPI/api",
   getDropDownSetting: {
     singleSelection: false,
     idField: 'id',

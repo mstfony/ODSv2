@@ -34,11 +34,8 @@ namespace Business.Handlers.SensorValues.Commands
     public class CreateSensorValueCommand : IRequest<IResult>
     {
 
-        public int SensorId { get; set; }
-        public double Value { get; set; }
-        public System.DateTime DateTime { get; set; }
-
-
+        public SensorValue [] SensorValues { get; set; }
+        
         public class CreateSensorValueCommandHandler : IRequestHandler<CreateSensorValueCommand, IResult>
         {
             private readonly ISensorValueRepository _sensorValueRepository;
@@ -57,113 +54,117 @@ namespace Business.Handlers.SensorValues.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateSensorValueCommand request, CancellationToken cancellationToken)
             {
-
-                var addedSensorValue = new SensorValue
-                {
-                    SensorId = request.SensorId,
-                    Value = request.Value,
-                    DateTime = DateTime.Now
-
-                };
-
-                _sensorValueRepository.Add(addedSensorValue);
-                await _sensorValueRepository.SaveChangesAsync();
-
                 //RabbitMQ ya gönderir....
-                var message = JsonConvert.SerializeObject(addedSensorValue);
+                var message = JsonConvert.SerializeObject(request.SensorValues);
                 _messageBrokerHelper.QueueMessage(message);
 
-                //Sensör Setting den Sensor ID ye göre veri çekiyorum
-              //  var sensorSettings = _sensorSettingRepository.GetList(m => m.SensorId == request.SensorId).ToList();
-                var sensorSettings = _mediator.Send(new GetSensorSettingsBySensorIdQuery {Id = request.SensorId}).Result.Data.ToList();
-                foreach (var sensorSetting in sensorSettings)
+                foreach (var sensorValue in request.SensorValues)
                 {
-                   // var setting = _settingRepository.Get(m => m.Id == sensorSetting.Id);
-                   // var parameter = _parameterRepository.Get(m => m.Id == setting.ParameterId);
-
-                    var setting = _mediator.Send(new GetSettingQuery{Id = sensorSetting.Id}).Result.Data;
-                    var parameter = _mediator.Send(new GetParameterQuery { Id = setting.Id }).Result.Data;
-                    switch (parameter.Id)
+                    var addedSensorValue = new SensorValue
                     {
-                        case 1:
-                            if (request.Value >= setting.Value)
-                            {
-                               // var alertActions = _alertActionRepository.GetList(m => m.SensorSettingId == sensorSetting.Id).ToList();
-                                var alertActions = _mediator
-                                    .Send(new GetAlertActionsBySsIdQuery {Id = sensorSetting.Id}).Result.Data.ToList();
+                        SensorId = sensorValue.SensorId,
+                        Value = sensorValue.Value,
+                        DateTime = DateTime.Now
 
-                                foreach (var alertAction in alertActions)
+                    };
+
+                    _sensorValueRepository.Add(addedSensorValue);
+                    await _sensorValueRepository.SaveChangesAsync();
+
+
+                    //Sensör Setting den Sensor ID ye göre veri çekiyorum
+                    //  var sensorSettings = _sensorSettingRepository.GetList(m => m.SensorId == request.SensorId).ToList();
+                    var sensorSettings = _mediator.Send(new GetSensorSettingsBySensorIdQuery { Id = sensorValue.SensorId }).Result.Data.ToList();
+                    foreach (var sensorSetting in sensorSettings)
+                    {
+                        // var setting = _settingRepository.Get(m => m.Id == sensorSetting.Id);
+                        // var parameter = _parameterRepository.Get(m => m.Id == setting.ParameterId);
+
+                        var setting = _mediator.Send(new GetSettingQuery { Id = sensorSetting.Id }).Result.Data;
+                        var parameter = _mediator.Send(new GetParameterQuery { Id = setting.Id }).Result.Data;
+                        switch (parameter.Id)
+                        {
+                            case 1:
+                                if (sensorValue.Value >= setting.Value)
                                 {
-                                    switch (alertAction.AlertId)
+                                    // var alertActions = _alertActionRepository.GetList(m => m.SensorSettingId == sensorSetting.Id).ToList();
+                                    var alertActions = _mediator
+                                        .Send(new GetAlertActionsBySsIdQuery { Id = sensorSetting.Id }).Result.Data.ToList();
+
+                                    foreach (var alertAction in alertActions)
                                     {
-                                        case 1:
-                                            IAlertService alertService=new AlertSms();
+                                        switch (alertAction.AlertId)
+                                        {
+                                            case 1:
+                                                IAlertService alertService = new AlertSms();
 
-                                            var users = _mediator.Send(new GetAlertActionUsersByAaIdQuery
-                                                {Id = alertAction.Id}).Result.Data.ToList();
-                                        //    var users = _alertActionUserRepository.GetList(m => m.AlertActionId == alertAction.Id).ToList();
-                                            foreach (var user in users)
-                                            {
-
-                                                var getAlertAction = _mediator
-                                                    .Send(new GetAlertActionUsersByAaIdAndUserIdQuery
-                                                        {AlertId = alertAction.Id, UserId = user.UserId}).Result.Data;
-
-                                                var getAlertActionLogs = _mediator
-                                                    .Send(new GetAlertActionLogsByAaIdQuery {id = getAlertAction.Id})
-                                                    .Result.Data.ToList().LastOrDefault();
-
-                                                if (getAlertActionLogs==null)
+                                                var users = _mediator.Send(new GetAlertActionUsersByAaIdQuery
+                                                { Id = alertAction.Id }).Result.Data.ToList();
+                                                //    var users = _alertActionUserRepository.GetList(m => m.AlertActionId == alertAction.Id).ToList();
+                                                foreach (var user in users)
                                                 {
-                                                    // var getUser = _userRepository.Get(m => m.UserId == user.UserId);
-                                                    var getUser = _mediator.Send(new GetUserQuery { UserId = user.UserId })
-                                                        .Result.Data;
-                                                    var log = _mediator.Send(new CreateAlertActionLogCommand
+
+                                                    var getAlertAction = _mediator
+                                                        .Send(new GetAlertActionUsersByAaIdAndUserIdQuery
+                                                        { AlertId = alertAction.Id, UserId = user.UserId }).Result.Data;
+
+                                                    var getAlertActionLogs = _mediator
+                                                        .Send(new GetAlertActionLogsByAaIdQuery { id = getAlertAction.Id })
+                                                        .Result.Data.ToList().LastOrDefault();
+
+                                                    if (getAlertActionLogs == null)
+                                                    {
+                                                        // var getUser = _userRepository.Get(m => m.UserId == user.UserId);
+                                                        var getUser = _mediator.Send(new GetUserQuery { UserId = user.UserId })
+                                                            .Result.Data;
+                                                        var log = _mediator.Send(new CreateAlertActionLogCommand
                                                         { AlertActionUserId = user.Id, DateTime = DateTime.Now }).Result;
 
 
-                                                    //var getLog=_mediator.Send(new GetAlertActionLogsQuery())
-                                                    alertService.SendAlert(getUser.MobilePhones, alertAction.Message);
+                                                        //var getLog=_mediator.Send(new GetAlertActionLogsQuery())
+                                                        alertService.SendAlert(getUser.MobilePhones, alertAction.Message);
 
-                                                }
-                                                else if (getAlertActionLogs.DateTime.AddMinutes(5)<DateTime.Now)
-                                                {
-                                                    // var getUser = _userRepository.Get(m => m.UserId == user.UserId);
-                                                    var getUser = _mediator.Send(new GetUserQuery { UserId = user.UserId })
-                                                        .Result.Data;
-                                                    var log = _mediator.Send(new CreateAlertActionLogCommand
+                                                    }
+                                                    else if (getAlertActionLogs.DateTime.AddMinutes(5) < DateTime.Now)
+                                                    {
+                                                        // var getUser = _userRepository.Get(m => m.UserId == user.UserId);
+                                                        var getUser = _mediator.Send(new GetUserQuery { UserId = user.UserId })
+                                                            .Result.Data;
+                                                        var log = _mediator.Send(new CreateAlertActionLogCommand
                                                         { AlertActionUserId = user.Id, DateTime = DateTime.Now }).Result;
 
 
-                                                    //var getLog=_mediator.Send(new GetAlertActionLogsQuery())
-                                                    alertService.SendAlert(getUser.MobilePhones, alertAction.Message);
+                                                        //var getLog=_mediator.Send(new GetAlertActionLogsQuery())
+                                                        alertService.SendAlert(getUser.MobilePhones, alertAction.Message);
+                                                    }
+
+
                                                 }
 
-                                              
-                                            }
-                                           
-                                            break;
-                                        case 2:
-                                            //sendEmail
-                                            break;
-                                        case 3:
-                                            //callPhone
-                                            break;
+                                                break;
+                                            case 2:
+                                                //sendEmail
+                                                break;
+                                            case 3:
+                                                //callPhone
+                                                break;
+                                        }
                                     }
                                 }
-                            }
-                            break;
-                        case 2:
-                            if (request.Value <= setting.Value)
-                            {
+                                break;
+                            case 2:
+                                if (sensorValue.Value <= setting.Value)
+                                {
 
-                            }
-                            break;
+                                }
+                                break;
+
+                        }
+
 
                     }
-
-
                 }
+       
                 return new SuccessResult(Messages.Added);
             }
         }

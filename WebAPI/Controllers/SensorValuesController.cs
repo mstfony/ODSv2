@@ -73,8 +73,7 @@ namespace WebAPI.Controllers
             var result = await Mediator.Send(createSensorValue);
             if (result.Success)
             {
-                MyHub myHub = new MyHub();
-                await myHub.SendMessageAsync("Isı : ");
+              
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
@@ -87,12 +86,13 @@ namespace WebAPI.Controllers
         {
             public override Task OnConnectedAsync()
             {
-                return Clients.Client(Context.ConnectionId).SendAsync("SetConnectionId", Context.ConnectionId);
+                return Clients.Client(Context.ConnectionId).SendAsync("GetConnectionID", Context.ConnectionId);
             }
            
-            public Task PushValues(SensorValue sensorValue)
+            public Task PushValues(List<SensorValue> sensorValue)
             {
-                return Clients.Client(Context.ConnectionId).SendAsync("GetValues", sensorValue);
+                
+                return Clients.All.SendAsync("GetValues", sensorValue);
             }
         }
 
