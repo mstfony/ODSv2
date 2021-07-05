@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Business.Handlers.SensorValues.Commands;
 using Business.Handlers.SensorValues.Queries;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Entities.Concrete;
 using System.Collections.Generic;
+using Entities.Dtos;
 using Microsoft.AspNetCore.SignalR;
 using WebAPI.Hubs;
 
@@ -68,9 +70,14 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateSensorValueCommand createSensorValue)
+        public async Task<IActionResult> Add(ODS ods)
         {
-            var result = await Mediator.Send(createSensorValue);
+            SensorValue[] sensorValues = new SensorValue[2];
+            sensorValues[0] = new SensorValue {DateTime = DateTime.Now, Id = 0, SensorId = 1, Value = ods.temp.Value};
+            sensorValues[1] = new SensorValue
+                {DateTime = DateTime.Now, Id = 0, SensorId = 2, Value = ods.humanity.Value};
+            
+            var result = await Mediator.Send(new CreateSensorValueCommand{SensorValues = sensorValues});
             if (result.Success)
             {
               
