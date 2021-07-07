@@ -43,10 +43,10 @@ namespace Business.Handlers.AlertActions.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateAlertActionCommand request, CancellationToken cancellationToken)
             {
-                var isThereAlertActionRecord = _alertActionRepository.Query().Any(u => u.SensorSettingId == request.SensorSettingId);
+                //var isThereAlertActionRecord = _alertActionRepository.Query().Any(u => u.SensorSettingId == request.SensorSettingId);
 
-                if (isThereAlertActionRecord == true)
-                    return new ErrorResult(Messages.NameAlreadyExist);
+                //if (isThereAlertActionRecord == true)
+                //    return new ErrorResult(Messages.NameAlreadyExist);
 
                 var addedAlertAction = new AlertAction
                 {

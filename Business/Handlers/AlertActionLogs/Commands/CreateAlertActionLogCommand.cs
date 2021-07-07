@@ -42,10 +42,10 @@ namespace Business.Handlers.AlertActionLogs.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateAlertActionLogCommand request, CancellationToken cancellationToken)
             {
-                var isThereAlertActionLogRecord = _alertActionLogRepository.Query().Any(u => u.AlertActionUserId == request.AlertActionUserId);
+                //var isThereAlertActionLogRecord = _alertActionLogRepository.Query().Any(u => u.AlertActionUserId == request.AlertActionUserId);
 
-                if (isThereAlertActionLogRecord == true)
-                    return new ErrorResult(Messages.NameAlreadyExist);
+                //if (isThereAlertActionLogRecord == true)
+                //    return new ErrorResult(Messages.NameAlreadyExist);
 
                 var addedAlertActionLog = new AlertActionLog
                 {
