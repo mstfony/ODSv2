@@ -30,7 +30,7 @@ namespace Business.Handlers.SensorSettings.Queries
             }
 
             [PerformanceAspect(5)]
-            [CacheAspect(10)]
+          //  [CacheAspect(10)]
             [LogAspect(typeof(FileLogger))]
           //  [SecuredOperation(Priority = 1)]
             public async Task<IDataResult<IEnumerable<SensorSetting>>> Handle(GetSensorSettingsBySensorIdQuery request, CancellationToken cancellationToken)
